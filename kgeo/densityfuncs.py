@@ -65,7 +65,7 @@ def density_mono_all(rvals, thvals, guesses_shape, psitarget, spin, nu_parallel,
         bupper = np.transpose(np.transpose(bfield.bfield_lab(spin, rdirect, th=thdirect)))
 
         #paraboloid
-        velpara = Velocity('driftframe', bfield = bfield, nu_parallel = nu_parallel, gammamax = None)
+        velpara = Velocity('driftframe', bfield = bfield, nu_parallel = nu_parallel, gammamax = gammamax)
         (u0,u1,u2,u3) = velpara.u_lab(spin, rdirect, th=thdirect)
 
         #density
@@ -138,7 +138,7 @@ def density_para_all(rvals, thvals, guesses_shape, psitarget, spin, nu_parallel,
         bupper = np.transpose(np.transpose(bfield.bfield_lab(spin, rdirect, th=thdirect)))
 
         #paraboloid
-        velpara = Velocity('driftframe', bfield = bfield, nu_parallel = nu_parallel, gammamax = None)
+        velpara = Velocity('driftframe', bfield = bfield, nu_parallel = nu_parallel, gammamax = gammamax)
         (u0,u1,u2,u3) = velpara.u_lab(spin, rdirect, th=thdirect)
 
         #density
@@ -207,7 +207,7 @@ def density_power_all(rvals, thvals, guesses_shape, psitarget, spin, nu_parallel
         bupper = np.transpose(np.transpose(bfield.bfield_lab(spin, rdirect, th=thdirect)))
 
         #paraboloid
-        velpara = Velocity('driftframe', bfield = bfield, nu_parallel = nu_parallel, gammamax = None)
+        velpara = Velocity('driftframe', bfield = bfield, nu_parallel = nu_parallel, gammamax = gamammax)
         (u0,u1,u2,u3) = velpara.u_lab(spin, rdirect, th=thdirect)
 
         #density
