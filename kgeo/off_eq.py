@@ -6,7 +6,8 @@ from kgeo.densityfuncs import *
 
 def Iobs_off(a, r_o, r_s, th_o, alpha, beta, kr_sign, kth_sign,
          emissivity=emis_default, velocity=vel_default, bfield=bfield_default,
-         polarization=False, specind=SPECIND, th_s=np.pi/2, density=1, retsin = False, emit='jet'):
+         polarization=False, specind=SPECIND, th_s=np.pi/2, density=1, 
+         retsin = False, emit='jet', pathcor='R'):
     """Return (Iobs, g, r_s, Ir, Imax, Nmax) where
        Iobs is Observed intensity for a ring of order mbar, GLM20 Eq 6
        g is the Doppler factor
@@ -78,7 +79,7 @@ def Iobs_off(a, r_o, r_s, th_o, alpha, beta, kr_sign, kth_sign,
         if polarization:
             (sinthb, kappa, pathlength, bsq) = calc_polquantities(a, r_s[~zeromask], lam[~zeromask], eta[~zeromask],
                                                  kr_sign, kth_sign, u0, u1, u2, u3, 
-                                                 bfield=bfield, th=th_s)
+                                                 bfield=bfield, th=th_s, pathcor=pathcor)
             (cos2chi, sin2chi) = calc_evpa(a, th_o, alpha[~zeromask], beta[~zeromask], kappa)
 
         else:
@@ -117,7 +118,8 @@ def Iobs_off(a, r_o, r_s, th_o, alpha, beta, kr_sign, kth_sign,
 
 #get stokes parameters for a grid with off-equatorial emission in BZ model
 def getstokes(psitarget, alphavals, betavals, r_o, th_o, a, ngeo, do_phi_and_t = True, model='para', neqmax=1, eta=1, outgeo=None, tol=1e-8, emit='jet',
-              nu_parallel = 0, pval=1, gammamax=None, retvals = False, vel='driftframe', sigma=2, sumsubring=True, usemono=False, retsin=False, sigmaplasma=1): #neqmax is the maximum number of equatorial crossings
+              nu_parallel = 0, pval=1, gammamax=None, retvals = False, vel='driftframe', sigma=2, sumsubring=True, usemono=False, retsin=False, 
+              sigmaplasma=1, pathcor='R', specind = 1): #neqmax is the maximum number of equatorial crossings
     ashape = alphavals.shape #store shapes for later
     alphavals = alphavals.flatten() #flatten since we need everything to be a vector for our code to work
     betavals = betavals.flatten()
@@ -165,7 +167,7 @@ def getstokes(psitarget, alphavals, betavals, r_o, th_o, a, ngeo, do_phi_and_t =
 
     outvec = Iobs_off(a, r_o, rvals, th_o, alphavals, betavals, signpr, signptheta,
     emissivity=Emissivity('constant'), velocity=Velocity('driftframe', bfield=bf, nu_parallel = nu_parallel, gammamax=gammamax), bfield=bf,
-    polarization=True,  specind=SPECIND, th_s=thvals, density=dvals, retsin=retsin, emit=emit) #generate data
+    polarization=True,  specind=specind, th_s=thvals, density=dvals, retsin=retsin, emit=emit, pathcor=pathcor) #generate data
 
     iobs = np.copy(outvec[0])
     qobs = np.copy(outvec[1])

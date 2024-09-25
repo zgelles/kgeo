@@ -375,7 +375,7 @@ def calc_tetrades(a, r, lam, eta, kr_sign, kth_sign, u0, u1, u2, u3, th=np.pi/2)
     return tetrades
     
 def calc_polquantities(a, r, lam, eta, kr_sign, kth_sign, u0, u1, u2, u3, 
-                       bfield=bfield_default, th=np.pi/2):
+                       bfield=bfield_default, th=np.pi/2, pathcor='R'):
 
     """ calculate polarization quantities"""
 
@@ -497,7 +497,12 @@ def calc_polquantities(a, r, lam, eta, kr_sign, kth_sign, u0, u1, u2, u3,
 
     #path length
     kdotnorm = kp_x*norm_x_unit + kp_y*norm_y_unit + kp_z*norm_z_unit
-    pathlength = np.abs(kp_t/kdotnorm)
+    pathfac = 1.0 #modify for jet wall thickness profile
+    if pathcor == 'R':
+        pathfac = np.abs(r*np.sin(th))
+    elif pathcor == 'Z':
+        pathfac = np.abs(r*np.cos(th))
+    pathlength = np.abs(kp_t/kdotnorm)*pathfac #add correction to jet thickness
     
     # local polarization vector and emission angle
     f_x = (kp_y*Bp_z - kp_z*Bp_y)/kp_mag

@@ -38,6 +38,7 @@ def psi_BZ_para(r, theta, a): #theta in radians
 def psi_BZ_mono(theta):
     return 1-np.abs(np.cos(theta))
 
+
 def psi_power(r,theta,pval):
     return r**pval*(1-np.abs(np.cos(theta)))
 
@@ -50,9 +51,8 @@ def psifunc(r, theta, a, model='para', pval=1): #defines psi
         return psi_power(r,theta,pval)
     else:
         return 0
+
     
-
-
 def getneq(a, tau, u_minus, u_plus, th_s, th_o, signptheta, betas): #counts number of equatorial crossings on way from source to observer
     #combine equations 81 and 82 of GL Lensing
     uratio = u_plus/u_minus
@@ -109,6 +109,7 @@ def makegoodarray(arr): #converts guess array into correct dimensions
         result[i, :len(a)] = a
     return np.transpose(np.copy(result))
 
+
 def getguesses(outgeo, a, rout, inc, alphas, betas, psitarget, ngeo, do_phi_and_t=True, neqmax=1, model='para',pval=1): #returns guesses for the psi of the first equatorial crossing
     tauguesses = []
     
@@ -128,6 +129,7 @@ def getguesses(outgeo, a, rout, inc, alphas, betas, psitarget, ngeo, do_phi_and_
                 continue
             else:
                 rparam = 1
+
         minfunc = np.roll(psifromgeo[:,i], -1)*psifromgeo[:,i] #we need to make sure this function crosses zero
         
         indmax = np.argmin(np.abs(outgeo.mino_times[:,i]-taumaxes[i]))
@@ -148,6 +150,7 @@ def getguesses(outgeo, a, rout, inc, alphas, betas, psitarget, ngeo, do_phi_and_
 
 
 #find crossing using newton's method
+
 def findroot(outgeo, psitarget, alpha, beta, r_o, th_o, a, ngeo, do_phi_and_t = True, model='para', neqmax=1, tol=1e-8,pval=1): 
     #guesses  
     guesses = getguesses(outgeo, a, r_o, th_o, alpha, beta, psitarget, ngeo, do_phi_and_t=do_phi_and_t, neqmax=neqmax, model=model, pval=pval)
@@ -189,7 +192,7 @@ def findroot(outgeo, psitarget, alpha, beta, r_o, th_o, a, ngeo, do_phi_and_t = 
         #integration in r
         (r_s, I_ph, I_t, I_sig) = r_integrate(a,r_o,lam,eta, r1,r2,r3,r4,np.reshape(minotimes, (1, len(minotimes))),
                                         do_phi_and_t=True)
-        
+       
         arrhere = psifunc(r_s[0], th_s[0], a, model=model,pval=pval) - psitarget
         arrhere[guesses == -1] = 0 #no intersections
 
