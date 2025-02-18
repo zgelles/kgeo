@@ -272,8 +272,8 @@ def densityconstsigma(rvals, thvals, a, nu_parallel, sigmaplasma, model, gammama
 
     return bsq/sigmaplasma #assumption is that bsq/rho = sigmaplasma
 
-def densitypoynting(rvals, thvals, a, bf):
-    (B1, B2, B3) = bf.bfield_lab(a, rvals, th=thvals)
+def densitypoynting(rvals, thvals, a, bf, gammamax=None, nu_parallel='FF'):
+    #compute metric factors
     sig = rvals**2+a**2*np.cos(thvals)**2
     delta = rvals**2-2*rvals+a**2
     pi = (rvals**2+a**2)**2-a**2*delta*np.sin(thvals)**2
@@ -281,13 +281,19 @@ def densitypoynting(rvals, thvals, a, bf):
     grr = sig/delta
     gthetatheta = sig
     gphiphi = pi*np.sin(thvals)**2/sig
+    
+    #compute magnetic field components in ZAMO frame
+    (B1, B2, B3) = bf.bfield_lab(a, rvals, th=thvals)
     B1Zamo = alphalapse*B1*np.sqrt(grr)
     B2Zamo = alphalapse*B2*np.sqrt(gthetatheta)
     B3Zamo = alphalapse*B3*np.sqrt(gphiphi)
-    velocityperp = Velocity('driftframe', bfield=bf, nu_parallel = 0, gammamax=None)
-    (gammaperp, vperp1, vperp2, vperp3) = velocityperp.u_lab(a, rvals, th=thvals, retqty=True)
     Bsq = B1Zamo**2+B2Zamo**2+B3Zamo**2
-    vperpmag = np.sqrt(gammaperp**2-1)/gammaperp
+    
+    #compute perpendicular velocity
+    velocityhere = Velocity('driftframe', bfield=bf, nu_parallel = nu_parallel, gammamax = gammamax)
+    (vperpmag, vperp1, vperp2, vperp3) = velocityhere.u_lab(a, rvals, th=thvals, retqty=True)
+
+    #compute Poynting flux from S=vperp*B^2
     poyntingmag = Bsq*vperpmag
     return np.abs(np.nan_to_num(poyntingmag))
     

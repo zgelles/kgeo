@@ -163,7 +163,7 @@ def getstokes(psitarget, alphavals, betavals, r_o, th_o, a, ngeo, do_phi_and_t =
         dvals = densityconstsigma(rvals, thvals, a, nu_parallel, sigmaplasma, model, gammamax=gammamax, pval = pval, usemono=usemono)
     
     elif emit == 'poynting':
-        dvals = densitypoynting(rvals, thvals, a, bf)
+        dvals = densitypoynting(rvals, thvals, a, bf, gammamax=gammamax, nu_parallel = nu_parallel)
 
     else: #do jet emissivity profile
         if model == 'mono' or (model == 'power' and pval == 0):
